@@ -8,12 +8,13 @@ import { IProduct } from './Product';
 })
 export class ProductListComponent implements OnInit {
 
-  showImage :boolean=false;
-  pageTitle:string="Product List";
-  imageWidth=50;
-  imageMargin=2;
-  filteredString="cart";
-  products:IProduct[]=[
+  showImage: boolean = false;
+  pageTitle: string = "Product List";
+  changableTitle:string;
+  imageWidth = 50;
+  imageMargin = 2;
+
+  products: IProduct[] = [
     {
       "productId": 1,
       "productName": "Leaf Rake",
@@ -65,13 +66,40 @@ export class ProductListComponent implements OnInit {
       "imageUrl": "assets/images/xbox-controller.png"
     }
   ];
-  constructor() { }
 
-  ngOnInit() {
-    console.log("In ngOnInit"); 
+  filteredProducts: IProduct[] = [];
+  private _filteredString;
+
+  public get filteredString() {
+    return this._filteredString;
+  }
+  public set filteredString(value) {
+    this._filteredString = value;
+    this.filteredProducts =
+      this._filteredString ? this.filterProducts(this._filteredString) : this.products;
+
   }
 
-  toggleImage():void{
-   this.showImage=!this.showImage
+  constructor() {
+    this.filteredString="cart";
+   // this.filteredProducts=this.products;
+   }
+
+  private filterProducts(value) {
+    value = value.toLocaleLowerCase();
+    return this.products.filter(
+      (product: IProduct) => product.productName.toLocaleLowerCase().indexOf(value) !== -1)
+  }
+
+  ngOnInit() {
+    console.log("In ngOnInit");
+  }
+
+  toggleImage(): void {
+    this.showImage = !this.showImage
+  }
+
+  eventOccured(value):void{
+    this.pageTitle+=" "+value;
   }
 }
